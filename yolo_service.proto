@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package yolo;
+
+// YOLO 检测服务
+service YoloDetector {
+    rpc Detect (DetectRequest) returns (DetectResponse) {}
+}
+
+// 客户端请求：包含图片的字节数据
+message DetectRequest {
+    bytes image_data = 1;
+}
+
+// 单个检测结果
+message Detection {
+    float x = 1;         // 中心点 x 或 xmin (取决于具体的 YOLO 导出格式)
+    float y = 2;         // 中心点 y 或 ymin
+    float width = 3;     // 宽度 或 xmax
+    float height = 4;    // 高度 或 ymax
+    float confidence = 5;// 置信度得分
+    int32 class_id = 6;  // 类别 ID
+}
+
+// 服务端响应
+message DetectResponse {
+    int32 status_code = 1;          // 状态码：0 表示成功，其他表示失败
+    string message = 2;             // 提示信息（成功或错误原因）
+    repeated Detection detections = 3; // 检测结果列表
+}
